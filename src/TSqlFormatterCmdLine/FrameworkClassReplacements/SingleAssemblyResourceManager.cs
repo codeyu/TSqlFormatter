@@ -29,10 +29,10 @@ namespace FrameworkClassReplacements
 {
     public class SingleAssemblyResourceManager : System.Resources.ResourceManager
     {
-        private Type _contextTypeInfo;
-        private string _namespace;
+        private readonly Type _contextTypeInfo;
+        private readonly string _namespace;
         private CultureInfo _neutralResourcesCulture;
-        public Hashtable ResourceSets {get;set;}
+        private readonly Hashtable _resourceSets = new Hashtable();
         public SingleAssemblyResourceManager(Type t)
             : base(t)
         {
@@ -48,7 +48,7 @@ namespace FrameworkClassReplacements
  
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
-            ResourceSet rs = (ResourceSet)this.ResourceSets[culture];
+            ResourceSet rs = (ResourceSet)this._resourceSets[culture];
             if (rs == null)
             {
                 Stream store = null;
@@ -75,7 +75,7 @@ namespace FrameworkClassReplacements
                 {
                     rs = new ResourceSet(store);
                     //save for later.
-                    AddResourceSet(this.ResourceSets, culture, ref rs);
+                    AddResourceSet(this._resourceSets, culture, ref rs);
                 }
                 else
                 {

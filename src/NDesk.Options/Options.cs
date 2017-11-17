@@ -128,7 +128,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
@@ -140,130 +139,112 @@ using System.Linq;
 namespace NDesk.Options {
 
 	public class OptionValueCollection : IList, IList<string> {
-
-		List<string> values = new List<string> ();
-		OptionContext c;
+	    readonly List<string> _values = new List<string> ();
+	    readonly OptionContext _c;
 
 		internal OptionValueCollection (OptionContext c)
 		{
-			this.c = c;
+			_c = c;
 		}
 
 		#region ICollection
-		void ICollection.CopyTo (Array array, int index)  {(values as ICollection).CopyTo (array, index);}
-		bool ICollection.IsSynchronized                   {get {return (values as ICollection).IsSynchronized;}}
-		object ICollection.SyncRoot                       {get {return (values as ICollection).SyncRoot;}}
-		#endregion
+		void ICollection.CopyTo (Array array, int index)  {(_values as ICollection).CopyTo (array, index);}
+		bool ICollection.IsSynchronized => (_values as ICollection).IsSynchronized;
+	    object ICollection.SyncRoot => (_values as ICollection).SyncRoot;
+
+	    #endregion
 
 		#region ICollection<T>
-		public void Add (string item)                       {values.Add (item);}
-		public void Clear ()                                {values.Clear ();}
-		public bool Contains (string item)                  {return values.Contains (item);}
-		public void CopyTo (string[] array, int arrayIndex) {values.CopyTo (array, arrayIndex);}
-		public bool Remove (string item)                    {return values.Remove (item);}
-		public int Count                                    {get {return values.Count;}}
-		public bool IsReadOnly                              {get {return false;}}
-		#endregion
+		public void Add (string item)                       {_values.Add (item);}
+		public void Clear ()                                {_values.Clear ();}
+		public bool Contains (string item)                  {return _values.Contains (item);}
+		public void CopyTo (string[] array, int arrayIndex) {_values.CopyTo (array, arrayIndex);}
+		public bool Remove (string item)                    {return _values.Remove (item);}
+		public int Count => _values.Count;
+	    public bool IsReadOnly => false;
+
+	    #endregion
 
 		#region IEnumerable
-		IEnumerator IEnumerable.GetEnumerator () {return values.GetEnumerator ();}
+		IEnumerator IEnumerable.GetEnumerator () {return _values.GetEnumerator ();}
 		#endregion
 
 		#region IEnumerable<T>
-		public IEnumerator<string> GetEnumerator () {return values.GetEnumerator ();}
+		public IEnumerator<string> GetEnumerator () {return _values.GetEnumerator ();}
 		#endregion
 
 		#region IList
-		int IList.Add (object value)                {return (values as IList).Add (value);}
-		bool IList.Contains (object value)          {return (values as IList).Contains (value);}
-		int IList.IndexOf (object value)            {return (values as IList).IndexOf (value);}
-		void IList.Insert (int index, object value) {(values as IList).Insert (index, value);}
-		void IList.Remove (object value)            {(values as IList).Remove (value);}
-		void IList.RemoveAt (int index)             {(values as IList).RemoveAt (index);}
+		int IList.Add (object value)                {return (_values as IList).Add (value);}
+		bool IList.Contains (object value)          {return (_values as IList).Contains (value);}
+		int IList.IndexOf (object value)            {return (_values as IList).IndexOf (value);}
+		void IList.Insert (int index, object value) {(_values as IList).Insert (index, value);}
+		void IList.Remove (object value)            {(_values as IList).Remove (value);}
+		void IList.RemoveAt (int index)             {(_values as IList).RemoveAt (index);}
 		bool IList.IsFixedSize                      {get {return false;}}
-		object IList.this [int index]               {get {return this [index];} set {(values as IList)[index] = value;}}
+		object IList.this [int index]               {get {return this [index];} set {(_values as IList)[index] = value;}}
 		#endregion
 
 		#region IList<T>
-		public int IndexOf (string item)            {return values.IndexOf (item);}
-		public void Insert (int index, string item) {values.Insert (index, item);}
-		public void RemoveAt (int index)            {values.RemoveAt (index);}
+		public int IndexOf (string item)            {return _values.IndexOf (item);}
+		public void Insert (int index, string item) {_values.Insert (index, item);}
+		public void RemoveAt (int index)            {_values.RemoveAt (index);}
 
 		private void AssertValid (int index)
 		{
-			if (c.Option == null)
+			if (_c.Option == null)
 				throw new InvalidOperationException ("OptionContext.Option is null.");
-			if (index >= c.Option.MaxValueCount)
+			if (index >= _c.Option.MaxValueCount)
 				throw new ArgumentOutOfRangeException ("index");
-			if (c.Option.OptionValueType == OptionValueType.Required &&
-					index >= values.Count)
+			if (_c.Option.OptionValueType == OptionValueType.Required &&
+					index >= _values.Count)
 				throw new OptionException (string.Format (
-							c.OptionSet.MessageLocalizer ("Missing required value for option '{0}'."), c.OptionName), 
-						c.OptionName);
+							_c.OptionSet.MessageLocalizer ("Missing required value for option '{0}'."), _c.OptionName), 
+						_c.OptionName);
 		}
 
 		public string this [int index] {
 			get {
 				AssertValid (index);
-				return index >= values.Count ? null : values [index];
+				return index >= _values.Count ? null : _values [index];
 			}
 			set {
-				values [index] = value;
+				_values [index] = value;
 			}
 		}
 		#endregion
 
 		public List<string> ToList ()
 		{
-			return new List<string> (values);
+			return new List<string> (_values);
 		}
 
 		public string[] ToArray ()
 		{
-			return values.ToArray ();
+			return _values.ToArray ();
 		}
 
 		public override string ToString ()
 		{
-			return string.Join (", ", values.ToArray ());
+			return string.Join (", ", _values.ToArray ());
 		}
 	}
 
 	public class OptionContext {
-		private Option                option;
-		private string                name;
-		private int                   index;
-		private OptionSet             set;
-		private OptionValueCollection c;
-
-		public OptionContext (OptionSet set)
+	    public OptionContext (OptionSet set)
 		{
-			this.set = set;
-			this.c   = new OptionValueCollection (this);
+			OptionSet = set;
+			OptionValues   = new OptionValueCollection (this);
 		}
 
-		public Option Option {
-			get {return option;}
-			set {option = value;}
-		}
+		public Option Option { get; set; }
 
-		public string OptionName { 
-			get {return name;}
-			set {name = value;}
-		}
+	    public string OptionName { get; set; }
 
-		public int OptionIndex {
-			get {return index;}
-			set {index = value;}
-		}
+	    public int OptionIndex { get; set; }
 
-		public OptionSet OptionSet {
-			get {return set;}
-		}
+	    public OptionSet OptionSet { get; }
 
-		public OptionValueCollection OptionValues {
-			get {return c;}
-		}
+	    public OptionValueCollection OptionValues { get; }
 	}
 
 	public enum OptionValueType {
@@ -273,11 +254,12 @@ namespace NDesk.Options {
 	}
 
 	public abstract class Option {
-		string prototype, description;
-		string[] names;
-		OptionValueType type;
-		int count;
-		string[] separators;
+	    readonly string _prototype;
+	    readonly string description;
+	    readonly string[] names;
+	    readonly OptionValueType type;
+	    readonly int count;
+		string[] _separators;
 
 		protected Option (string prototype, string description)
 			: this (prototype, description, 1)
@@ -293,7 +275,7 @@ namespace NDesk.Options {
 			if (maxValueCount < 0)
 				throw new ArgumentOutOfRangeException ("maxValueCount");
 
-			this.prototype   = prototype;
+			this._prototype   = prototype;
 			this.names       = prototype.Split ('|');
 			this.description = description;
 			this.count       = maxValueCount;
@@ -316,7 +298,7 @@ namespace NDesk.Options {
 						"prototype");
 		}
 
-		public string           Prototype       {get {return prototype;}}
+		public string           Prototype       {get {return _prototype;}}
 		public string           Description     {get {return description;}}
 		public OptionValueType  OptionValueType {get {return type;}}
 		public int              MaxValueCount   {get {return count;}}
@@ -328,9 +310,9 @@ namespace NDesk.Options {
 
 		public string[] GetValueSeparators ()
 		{
-			if (separators == null)
+			if (_separators == null)
 				return new string [0];
-			return (string[]) separators.Clone ();
+			return (string[]) _separators.Clone ();
 		}
 
 		protected static T Parse<T> (string value, OptionContext c)
@@ -352,7 +334,7 @@ namespace NDesk.Options {
 		}
 
 		internal string[] Names           {get {return names;}}
-		internal string[] ValueSeparators {get {return separators;}}
+		internal string[] ValueSeparators {get {return _separators;}}
 
 		static readonly char[] NameTerminator = new char[]{'=', ':'};
 
@@ -387,11 +369,11 @@ namespace NDesk.Options {
 						"prototype");
 			if (count > 1) {
 				if (seps.Count == 0)
-					this.separators = new string[]{":", "="};
+					this._separators = new string[]{":", "="};
 				else if (seps.Count == 1 && seps [0].Length == 0)
-					this.separators = null;
+					this._separators = null;
 				else
-					this.separators = seps.ToArray ();
+					this._separators = seps.ToArray ();
 			}
 
 			return type == '=' ? OptionValueType.Required : OptionValueType.Optional;
@@ -483,12 +465,12 @@ namespace NDesk.Options {
 		}
 	}
 
-	public delegate void OptionAction<TKey, TValue> (TKey key, TValue value);
+	public delegate void OptionAction<in TKey, in TValue> (TKey key, TValue value);
 
 	public class OptionSet : KeyedCollection<string, Option>
 	{
 		public OptionSet ()
-			: this (delegate (string f) {return f;})
+			: this (f => f)
 		{
 		}
 

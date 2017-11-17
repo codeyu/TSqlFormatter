@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.IO;
 using System.Reflection;
@@ -38,7 +39,7 @@ namespace TSqlFormatterCmdLine
         const string UILANGUAGE_EN = "EN";
         const string UILANGUAGE_FR = "FR";
         const string UILANGUAGE_ES = "ES";
-
+        const string UILANGUAGE_ZH = "ZH";
         static int Main(string[] args)
         {
             //formatter engine option defaults
@@ -109,10 +110,12 @@ namespace TSqlFormatterCmdLine
                 if (!uiLangCode.Equals(UILANGUAGE_EN)
                     && !uiLangCode.Equals(UILANGUAGE_FR)
                     && !uiLangCode.Equals(UILANGUAGE_ES)
+                    && !uiLangCode.Equals(UILANGUAGE_ZH)
                     )
                 {
                     showUsageError = true;
                     //get the resource manager with default language, before displaying error.
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                     _generalResourceManager = new FrameworkClassReplacements.SingleAssemblyResourceManager("GeneralLanguageContent", Assembly.GetExecutingAssembly(), typeof(Program));
                     Console.Error.WriteLine(_generalResourceManager.GetString("UnrecognizedLanguageErrorMessage"));
                 }
@@ -125,6 +128,7 @@ namespace TSqlFormatterCmdLine
             }
             else
             {
+                System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                 _generalResourceManager = new FrameworkClassReplacements.SingleAssemblyResourceManager("GeneralLanguageContent", Assembly.GetExecutingAssembly(), typeof(Program));
             }
 
@@ -150,6 +154,7 @@ namespace TSqlFormatterCmdLine
             else if ((!string.IsNullOrEmpty(stdInput) && remainingArgs.Count == 1) || remainingArgs.Count > 1)
             {
                 showUsageError = true;
+               
                 Console.Error.WriteLine(_generalResourceManager.GetString("UnrecognizedArgumentsErrorMessage"));
             }
 
