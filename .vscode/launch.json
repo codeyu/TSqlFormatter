@@ -22,7 +22,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/bin/Debug/<insert-target-framework-here>/<insert-project-name-here>.dll",
-            "args": [],
+            "args": ["-l=zh-CN"],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",

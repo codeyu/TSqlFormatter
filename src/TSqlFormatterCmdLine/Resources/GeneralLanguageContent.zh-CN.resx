@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BackupFailureWarningMessage" xml:space="preserve">
+    <value>未能备份文件: {0} {1} 正在跳过此文件的格式设置。</value>
+    <comment>{0}是文件名，{1}是换行符。</comment>
+  </data>
+  <data name="ContentWriteFailureWarningMessage" xml:space="preserve">
+    <value>无法写入重新格式化的内容: {0}</value>
+  </data>
+  <data name="ErrorDetailMessageFragment" xml:space="preserve">
+    <value>错误详情： {0}</value>
+  </data>
+  <data name="FileReadFailureWarningMessage" xml:space="preserve">
+    <value>无法读取文件内容 (已中止): {0}</value>
+  </data>
+  <data name="FolderCreationFailureWarningMessage" xml:space="preserve">
+    <value>未能创建目标文件夹: {0}</value>
+  </data>
+  <data name="NoFilesFoundWarningMessage" xml:space="preserve">
+    <value>找不到符合文件名/模式（{0}）和扩展名（{1}）的文件</value>
+    <comment>{0}是文件名模式，{1}是请求的扩展名</comment>
+  </data>
+  <data name="NoInputErrorMessage" xml:space="preserve">
+    <value>未提供输入 (文件名或管道输入)。</value>
+  </data>
+  <data name="OutputFileCreationErrorMessage" xml:space="preserve">
+    <value>无法创建请求的输出文件。错误详情: {0}</value>
+  </data>
+  <data name="ParseErrorWarningPrefix" xml:space="preserve">
+    <value>【警告】在 SQL 分析过程中遇到错误！</value>
+  </data>
+  <data name="ParsingErrorWarningMessage" xml:space="preserve">
+    <value>分析或格式化文件内容时遇到错误 (已中止): {0}</value>
+  </data>
+  <data name="PathPatternErrorMessage" xml:space="preserve">
+    <value>处理请求的文件名/模式时出错。错误详情: {0}</value>
+  </data>
+  <data name="PossiblePartialWriteWarningMessage" xml:space="preserve">
+    <value>注意: 该文件部分内容可能已被覆盖！</value>
+  </data>
+  <data name="ProgramSummary" xml:space="preserve">
+    <value>Poor Man's T-SQL Formatter - 小巧免费的 Transact-SQL 格式化库。为 .Net Core 和JS 而生, 用 C# 所写。 分发协议为 AGPL v3。
+Copyright (C) 2011-2017 Tao Klerks</value>
+  </data>
+  <data name="ProgramUsageNotes" xml:space="preserve">
+    <value>用法说明：
+
+SqlFormatter &lt;文件名 或 模式&gt; &lt;选项&gt;
+
+is  indentString (默认值: \t)
+st  spacesPerTab (默认值: 4)
+mw  maxLineWidth (默认值: 999)
+sb  statementBreaks (默认值: 2)
+cb  clauseBreaks (默认值: 1)
+tc  trailingCommas (默认值: false)
+sac spaceAfterExpandedComma (默认值: false)
+ebc expandBetweenConditions (默认值: true)
+ebe expandBooleanExpressions (默认值: true)
+ecs expandCaseStatements (默认值: true)
+ecl expandCommaLists (默认值: true)
+eil expandInLists (默认值: true)
+uk  uppercaseKeywords (默认值: true)
+sk  standardizeKeywords (默认值: false)
+ae  allowParsingErrors (默认值: false)
+e   extensions (默认值: sql)
+r   recursive (默认值: false)
+b   backups (默认值: true)
+b   outputFileOrFolder (默认值: none; if set, overrides the backup option)
+l   languageCode (默认值: current if supported or EN; valid values include EN, FR, zh-CN and ES)
+h ? help
+
+使用尾随减号禁用布尔选项, 只需通过指定它们或尾随加号来启用。
+You can also pipe the SQL to be formatted in (UTF-8 encoding), and then no input path is expected.
+
+示例:
+
+SqlFormatter TestFiles\* /is:"  " /tc /uk- 
+
+SqlFormatter test*.sql /o:resultfile.sql
+
+echo select somecolumn from sometable | SqlFormatter</value>
+  </data>
+  <data name="UnrecognizedArgumentsErrorMessage" xml:space="preserve">
+    <value>发现无法识别的参数！</value>
+  </data>
+  <data name="UnrecognizedLanguageErrorMessage" xml:space="preserve">
+    <value>所提供的语言代码不受支持。</value>
+  </data>
+</root>

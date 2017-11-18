@@ -27,19 +27,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NDesk.Options;
-
+using System.Resources;
 namespace TSqlFormatterCmdLine
 {
     class Program
     {
-        private static FrameworkClassReplacements.SingleAssemblyResourceManager _generalResourceManager = null;
+        // Create a resource manager. 
+        private static readonly ResourceManager GeneralResourceManager = new ResourceManager("TSqlFormatterCmdLine.Resources.GeneralLanguageContent", typeof(Program).Assembly);
 
-        const string UILANGUAGE_EN = "EN";
-        const string UILANGUAGE_FR = "FR";
-        const string UILANGUAGE_ES = "ES";
-        const string UILANGUAGE_ZH = "ZH";
+        private static readonly string[] SupportedCultures = new[]
+        {
+            "en","zh","fr","es"
+        };
         static int Main(string[] args)
         {
             //formatter engine option defaults
@@ -102,35 +104,25 @@ namespace TSqlFormatterCmdLine
 
             //first parse the args
             List<string> remainingArgs = p.Parse(args);
-
+            var currentCulture = CultureInfo.CurrentCulture.Name;
+            //get the resource manager with default language, before displaying error.
+            System.Threading.Thread.CurrentThread.CurrentUICulture = SupportedCultures.Contains(currentCulture.Substring(0, 2).ToLowerInvariant()) ? CultureInfo.CurrentCulture : CultureInfo.InvariantCulture;
             //then switch language if necessary
             if (uiLangCode != null)
             {
-                uiLangCode = uiLangCode.ToUpperInvariant();
-                if (!uiLangCode.Equals(UILANGUAGE_EN)
-                    && !uiLangCode.Equals(UILANGUAGE_FR)
-                    && !uiLangCode.Equals(UILANGUAGE_ES)
-                    && !uiLangCode.Equals(UILANGUAGE_ZH)
-                    )
+                if (uiLangCode.Length >=2 && SupportedCultures.Contains(uiLangCode.Substring(0,2).ToLowerInvariant()))
                 {
-                    showUsageError = true;
-                    //get the resource manager with default language, before displaying error.
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-                    _generalResourceManager = new FrameworkClassReplacements.SingleAssemblyResourceManager("GeneralLanguageContent", Assembly.GetExecutingAssembly(), typeof(Program));
-                    Console.Error.WriteLine(_generalResourceManager.GetString("UnrecognizedLanguageErrorMessage"));
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(uiLangCode);
+                    //get the resource manager AFTER setting language as requested.
                 }
                 else
                 {
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(uiLangCode);
-                    _generalResourceManager = new FrameworkClassReplacements.SingleAssemblyResourceManager("GeneralLanguageContent", Assembly.GetExecutingAssembly(), typeof(Program));
-                    //get the resource manager AFTER setting language as requested.
+                    showUsageError = true;
+                    Console.Error.WriteLine(GeneralResourceManager.GetString("UnrecognizedLanguageErrorMessage"));
+                    
                 }
             }
-            else
-            {
-                System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-                _generalResourceManager = new FrameworkClassReplacements.SingleAssemblyResourceManager("GeneralLanguageContent", Assembly.GetExecutingAssembly(), typeof(Program));
-            }
+            
 
             //nasty trick to figure out whether we're in a pipeline or not
             bool throwAwayValue;
@@ -149,13 +141,14 @@ namespace TSqlFormatterCmdLine
             if (string.IsNullOrEmpty(stdInput) && remainingArgs.Count == 0)
             {
                 showUsageError = true;
-                Console.Error.WriteLine(_generalResourceManager.GetString("NoInputErrorMessage"));
+                var noInputErrorMessage = GeneralResourceManager.GetString("NoInputErrorMessage");
+                Console.Error.WriteLine(noInputErrorMessage);
             }
             else if ((!string.IsNullOrEmpty(stdInput) && remainingArgs.Count == 1) || remainingArgs.Count > 1)
             {
                 showUsageError = true;
                
-                Console.Error.WriteLine(_generalResourceManager.GetString("UnrecognizedArgumentsErrorMessage"));
+                Console.Error.WriteLine(GeneralResourceManager.GetString("UnrecognizedArgumentsErrorMessage"));
             }
 
             if (extensions.Count == 0)
@@ -164,14 +157,14 @@ namespace TSqlFormatterCmdLine
             if (showUsageFriendly || showUsageError)
             {
                 TextWriter outStream = showUsageFriendly ? Console.Out : Console.Error;
-                outStream.WriteLine(_generalResourceManager.GetString("ProgramSummary"));
+                outStream.WriteLine(GeneralResourceManager.GetString("ProgramSummary"));
                 outStream.WriteLine("v" + Assembly.GetExecutingAssembly().GetName().Version.ToString());
-                outStream.WriteLine(_generalResourceManager.GetString("ProgramUsageNotes"));
+                outStream.WriteLine(GeneralResourceManager.GetString("ProgramUsageNotes"));
                 return 1;
             }
 
             var formatter = new PoorMansTSqlFormatterLib.Formatters.TSqlStandardFormatter(options);
-            formatter.ErrorOutputPrefix = _generalResourceManager.GetString("ParseErrorWarningPrefix") + Environment.NewLine;
+            formatter.ErrorOutputPrefix = GeneralResourceManager.GetString("ParseErrorWarningPrefix") + Environment.NewLine;
             var formattingManager = new PoorMansTSqlFormatterLib.SqlFormattingManager(formatter);
 
             bool warningEncountered = false;
@@ -195,9 +188,9 @@ namespace TSqlFormatterCmdLine
 
                 if (parsingError)
                 {
-                    Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ParsingErrorWarningMessage"), "STDIN"));
+                    Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ParsingErrorWarningMessage"), "STDIN"));
                     if (parseException != null)
-                        Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ErrorDetailMessageFragment"), parseException.Message));
+                        Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ErrorDetailMessageFragment"), parseException.Message));
                     warningEncountered = true;
                 }
                 else
@@ -246,7 +239,7 @@ namespace TSqlFormatterCmdLine
                 }
                 catch (Exception e)
                 {
-                    Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("PathPatternErrorMessage"), e.Message));
+                    Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("PathPatternErrorMessage"), e.Message));
                     return 2;
                 }
 
@@ -276,7 +269,7 @@ namespace TSqlFormatterCmdLine
                         }
                         catch (Exception e)
                         {
-                            Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("OutputFileCreationErrorMessage"), e.Message));
+                            Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("OutputFileCreationErrorMessage"), e.Message));
                             return 3;
                         }
                     }
@@ -284,7 +277,7 @@ namespace TSqlFormatterCmdLine
 
                 if (!ProcessSearchResults(extensions, backups, allowParsingErrors, formattingManager, matchingObjects, singleFileWriter, replaceFromFolderPath, replaceToFolderPath, ref warningEncountered))
                 {
-                    Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("NoFilesFoundWarningMessage"), remainingArgs[0], string.Join(",", extensions.ToArray())));
+                    Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("NoFilesFoundWarningMessage"), remainingArgs[0], string.Join(",", extensions.ToArray())));
                     return 4;
                 }
 
@@ -344,8 +337,8 @@ namespace TSqlFormatterCmdLine
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("FileReadFailureWarningMessage"), fileInfo.FullName));
-                Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
+                Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("FileReadFailureWarningMessage"), fileInfo.FullName));
+                Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
                 warningEncountered = true;
             }
             if (oldFileContents.Length > 0)
@@ -365,9 +358,9 @@ namespace TSqlFormatterCmdLine
 
                 if (parsingError)
                 {
-                    Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ParsingErrorWarningMessage"), fileInfo.FullName));
+                    Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ParsingErrorWarningMessage"), fileInfo.FullName));
                     if (parseException != null)
-                        Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ErrorDetailMessageFragment"), parseException.Message));
+                        Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ErrorDetailMessageFragment"), parseException.Message));
                     warningEncountered = true;
                 }
             }
@@ -390,8 +383,8 @@ namespace TSqlFormatterCmdLine
                     }
                     catch (Exception ex)
                     {
-                        Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("BackupFailureWarningMessage"), fileInfo.FullName, Environment.NewLine));
-                        Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
+                        Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("BackupFailureWarningMessage"), fileInfo.FullName, Environment.NewLine));
+                        Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
                         failedBackup = true;
                         warningEncountered = true;
                     }
@@ -419,8 +412,8 @@ namespace TSqlFormatterCmdLine
                             }
                             catch (Exception ex)
                             {
-                                Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("FolderCreationFailureWarningMessage"), targetFolder));
-                                Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
+                                Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("FolderCreationFailureWarningMessage"), targetFolder));
+                                Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
                                 failedFolder = true;
                                 warningEncountered = true;
                             }
@@ -443,10 +436,10 @@ namespace TSqlFormatterCmdLine
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ContentWriteFailureWarningMessage"), targetFilePath));
-                Console.Error.WriteLine(string.Format(_generalResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
+                Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ContentWriteFailureWarningMessage"), targetFilePath));
+                Console.Error.WriteLine(string.Format(GeneralResourceManager.GetString("ErrorDetailMessageFragment"), ex.Message));
                 if (replaceFromFolderPath == null || replaceToFolderPath == null)
-                    Console.Error.WriteLine(_generalResourceManager.GetString("PossiblePartialWriteWarningMessage"));
+                    Console.Error.WriteLine(GeneralResourceManager.GetString("PossiblePartialWriteWarningMessage"));
                 warningEncountered = true;
             }
         }
