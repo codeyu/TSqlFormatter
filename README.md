@@ -1,4 +1,4 @@
 # TSqlFormatter
 
-FORK from https://github.com/TaoK/PoorMansTSqlFormatter 
+FORK from https://github.com/TaoK/PoorMansTSqlFormatter   
 For .NET Core Only.

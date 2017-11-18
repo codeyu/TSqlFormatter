@@ -77,30 +77,29 @@ namespace TSqlFormatterCmdLine
             bool showUsageError = false;
 
             OptionSet p = new OptionSet()
-              .Add("is|indentString=", delegate(string v) { options.IndentString = v; })
-              .Add("st|spacesPerTab=", delegate(string v) { options.SpacesPerTab = int.Parse(v); })
-              .Add("mw|maxLineWidth=", delegate(string v) { options.MaxLineWidth = int.Parse(v); })
-			  .Add("sb|statementBreaks=", delegate(string v) { options.NewStatementLineBreaks = int.Parse(v); })
-			  .Add("cb|clauseBreaks=", delegate(string v) { options.NewClauseLineBreaks = int.Parse(v); })
-			  .Add("tc|trailingCommas", delegate(string v) { options.TrailingCommas = v != null; })
-              .Add("sac|spaceAfterExpandedComma", delegate(string v) { options.SpaceAfterExpandedComma = v != null; })
-              .Add("ebc|expandBetweenConditions", delegate(string v) { options.ExpandBetweenConditions = v != null; })
-              .Add("ebe|expandBooleanExpressions", delegate(string v) { options.ExpandBooleanExpressions = v != null; })
-              .Add("ecs|expandCaseStatements", delegate(string v) { options.ExpandCaseStatements = v != null; })
-			  .Add("ecl|expandCommaLists", delegate(string v) { options.ExpandCommaLists = v != null; })
-			  .Add("eil|expandInLists", delegate(string v) { options.ExpandInLists = v != null; })
-			  .Add("bjo|breakJoinOnSections", delegate(string v) { options.BreakJoinOnSections = v != null; })
-              .Add("uk|uppercaseKeywords", delegate(string v) { options.UppercaseKeywords = v != null; })
-              .Add("sk|standardizeKeywords", delegate(string v) { options.KeywordStandardization = v != null; })
+              .Add("is|indentString=", v => options.IndentString = v)
+              .Add("st|spacesPerTab=", v => options.SpacesPerTab = int.Parse(v))
+              .Add("mw|maxLineWidth=", v => options.MaxLineWidth = int.Parse(v))
+			  .Add("sb|statementBreaks=", v => options.NewStatementLineBreaks = int.Parse(v))
+			  .Add("cb|clauseBreaks=", v => options.NewClauseLineBreaks = int.Parse(v))
+			  .Add("tc|trailingCommas", v => options.TrailingCommas = v != null)
+              .Add("sac|spaceAfterExpandedComma", v => options.SpaceAfterExpandedComma = v != null)
+              .Add("ebc|expandBetweenConditions", v => options.ExpandBetweenConditions = v != null)
+              .Add("ebe|expandBooleanExpressions", v => options.ExpandBooleanExpressions = v != null)
+              .Add("ecs|expandCaseStatements", v => options.ExpandCaseStatements = v != null)
+			  .Add("ecl|expandCommaLists", v => options.ExpandCommaLists = v != null)
+			  .Add("eil|expandInLists", v => options.ExpandInLists = v != null)
+			  .Add("bjo|breakJoinOnSections", v => options.BreakJoinOnSections = v != null)
+              .Add("uk|uppercaseKeywords", v => options.UppercaseKeywords = v != null)
+              .Add("sk|standardizeKeywords", v => options.KeywordStandardization = v != null)
 
-              .Add("ae|allowParsingErrors", delegate(string v) { allowParsingErrors = v != null; })
-              .Add("e|extensions=", delegate(string v) { extensions.Add((v.StartsWith(".") ? "" : ".") + v); })
-              .Add("r|recursive", delegate(string v) { recursiveSearch = v != null; })
-              .Add("b|backups", delegate(string v) { backups = v != null; })
-              .Add("o|outputFileOrFolder=", delegate(string v) { outputFileOrFolder = v; })
-              .Add("l|languageCode=", delegate(string v) { uiLangCode = v; })
-              .Add("h|?|help", delegate(string v) { showUsageFriendly = v != null; })
-                  ;
+              .Add("ae|allowParsingErrors", v => allowParsingErrors = v != null)
+              .Add("e|extensions=", v => extensions.Add((v.StartsWith(".") ? "" : ".") + v))
+              .Add("r|recursive", v => recursiveSearch = v != null)
+              .Add("b|backups", v => backups = v != null)
+              .Add("o|outputFileOrFolder=", v => outputFileOrFolder = v)
+              .Add("l|languageCode=", v => uiLangCode = v)
+              .Add("h|?|help", v => showUsageFriendly = v != null) ;
 
             //first parse the args
             List<string> remainingArgs = p.Parse(args);
@@ -112,7 +111,7 @@ namespace TSqlFormatterCmdLine
             {
                 if (uiLangCode.Length >=2 && SupportedCultures.Contains(uiLangCode.Substring(0,2).ToLowerInvariant()))
                 {
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(uiLangCode);
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo(uiLangCode);
                     //get the resource manager AFTER setting language as requested.
                 }
                 else
